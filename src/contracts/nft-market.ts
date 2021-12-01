@@ -157,9 +157,35 @@ export class NftMarket extends Contract{
 
   // cancel order
   // requirement: msg_sender == seller
-  public cancelOrder(order_id: number): MsgExecuteContract {
+  public async cancelOrder(order_id: number): Promise<MsgExecuteContract> {
+    // get order info
     const cancel_order  = { order_id }
-    return this.createExecuteMsg({ cancel_order })
+
+    return this.cancelFeeQuery(order_id)
+    .then(fee => {
+      if (fee.amount === '0') {
+        return this.createExecuteMsg({ cancel_order })
+      } else if (isNative(fee)) {
+        const info = fee.info as NativeTokenInfo
+        return this.createExecuteMsg({ cancel_order }, new Coins(fee.amount + info.native_token.denom))
+      } else {
+        const info = fee.info as NonNativeTokenInfo
+        // need to use send msg
+        const cw20SendMsg = {
+          send: {
+            amount: fee.amount,
+            contract: this.contractAddress,
+            msg: objectToBase64({ cancel_order })
+          }
+        }
+
+        return new MsgExecuteContract(
+          this.key.accAddress,
+          info.token.contract_addr,
+          cw20SendMsg
+        )
+      }
+    })
   }
 
   
@@ -184,6 +210,11 @@ export class NftMarket extends Contract{
 
   public ordersQuery(orders: OrdersQuery): Promise<Order[]> {
     return this.query({ orders })
+  }
+
+  public cancelFeeQuery(order_id: number): Promise<Asset> {
+    let cancel_fee = { order_id }
+    return this.query({ cancel_fee })
   }
 }
 
