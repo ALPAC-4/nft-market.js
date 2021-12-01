@@ -15,7 +15,6 @@ $npm install ../nft-market.js
 
 ```ts
 import { LCDClient, MnemonicKey, MsgExecuteContract, MsgInstantiateContract, MsgStoreCode, Wallet } from "@terra-money/terra.js"
-import * as fs from 'fs'
 import { NftMarket } from "nft-market.js"
 
 const mnemonic = 'seed seed ..'
@@ -23,7 +22,6 @@ const contractAddress = 'terra1...'
 const nft_address = 'terra1..'
 const codeID = 123123
 
-// 
 async function sample() {
   const key = new MnemonicKey({mnemonic})
   const lcd = new LCDClient({
@@ -40,10 +38,6 @@ async function sample() {
 
   // sample msg gens
   const instantiateMsg = market.init(key.accAddress, '0.05', 100000, 604800)
-
-  const instantiateMsg = new MsgInstantiateContract( key.accAddress, '', cw721CodeId, {name: 'test', symbol: 'TEST', minter: key.accAddress} )
-
-  const mint = new MsgExecuteContract( key.accAddress, nft_address, { mint: {token_id: 'test_token', owner: key.accAddress}} )
 
   const updateConfig = market.updateConfig({ min_increase: '0.01' })
 
@@ -64,20 +58,35 @@ async function sample() {
   ]
   const updateCollection = market.updateCollection(nft_address, support_assets, royalties)
 
-  const makeFixedPriceOrder = market.makeFixedPriceOrder(nft_address, 'test_token', { info: { native_token: { denom: 'uusd' } }, amount: '10000000' })
+  const makeFixedPriceOrder = market.makeFixedPriceOrder(
+    nft_address,
+    'test_token',
+    { info: { native_token: { denom: 'uusd' } },amount: '10000000' }
+  )
 
   const executeOrder = await market.executeOrder(2)
 
-  const makeFixedPriceOrder = market.makeFixedPriceOrder(nft_address, 'test_token', { info: { native_token: { denom: 'uusd' } }, amount: '10000000' })
+  const makeFixedPriceOrder = market.makeFixedPriceOrder(
+    nft_address,
+    'test_token',
+    { info: { native_token: { denom: 'uusd' } },
+    amount: '10000000' }
+  )
 
   const cancelOrder = market.cancelOrder(2)
 
-  const makeAuctionOrder = market.makeAuctionOrder(nft_address, 'test_token', { info: { native_token: { denom: 'uusd' } }, amount: '10000000' }, {at_height: 6802062}, { info: { native_token: { denom: 'uusd' } }, amount: '100000000' })
+  const makeAuctionOrder = market.makeAuctionOrder(
+    nft_address,
+    'test_token',
+    { info: { native_token: { denom: 'uusd' } },amount: '10000000' },
+    {at_height: 6802062},
+    { info: { native_token: { denom: 'uusd' } }, amount: '100000000' }
+  )
 
   const bid = market.bid(1, { info: { native_token: { denom: 'uusd' } }, amount: '11025000' })
 
   const executeAuction = market.executeAuction(1)
-  
+
 
 
   // execute sample
