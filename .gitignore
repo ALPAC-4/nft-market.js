@@ -1,0 +1,12 @@
+node_modules
+dist
+bower_components
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Ignore built ts files
+dist/**/*
+
+.eslintrc.js
