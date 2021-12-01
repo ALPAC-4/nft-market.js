@@ -28,6 +28,13 @@ interface UpdateConfigExecute {
   max_auction_duration_second?: number
 }
 
+interface UpdateCollectionExecute {
+  nft_address: string
+  support_assets?: AssetInfo[]
+  royalties?: Royalty[]
+  auction_cancel_fee_rate?: string
+}
+
 export class NftMarket extends Contract{
   public init(owner: string, min_increase: string, max_auction_duration_block: number, max_auction_duration_second: number): MsgInstantiateContract {
     return this.createInstantiateMsg({ owner, min_increase, max_auction_duration_block, max_auction_duration_second });
@@ -42,8 +49,8 @@ export class NftMarket extends Contract{
 
   // add collection
   // requirement: msg_sender == owner
-  public addCollection(nft_address: string, support_assets: AssetInfo[], royalties: Royalty[]): MsgExecuteContract {
-    const add_collection = { nft_address, support_assets, royalties }
+  public addCollection(nft_address: string, support_assets: AssetInfo[], royalties: Royalty[], auction_cancel_fee_rate: string): MsgExecuteContract {
+    const add_collection = { nft_address, support_assets, royalties, auction_cancel_fee_rate }
     return this.createExecuteMsg({ add_collection })
   }
 
@@ -51,8 +58,7 @@ export class NftMarket extends Contract{
   // requirement: msg_sender == owner
   // if you want to delist/remove the collection, set support_asset = []
   // The reason that I didn't put remove_collection function is to avoid error from the order that already made.
-  public updateCollection(nft_address: string, support_assets: AssetInfo[], royalties: Royalty[]): MsgExecuteContract {
-    const update_collection = { nft_address, support_assets, royalties }
+  public updateCollection(update_collection: UpdateCollectionExecute): MsgExecuteContract {
     return this.createExecuteMsg({ update_collection })
   }
 
