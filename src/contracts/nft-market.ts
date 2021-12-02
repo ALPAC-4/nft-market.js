@@ -8,6 +8,7 @@ interface ConfigResponse {
   min_increase: string
   max_auction_duration_block: number
   max_auction_duration_second: number
+  auction_cancel_fee_rate: string
 }
 
 interface CollectionInfosQuery {
@@ -26,18 +27,26 @@ interface UpdateConfigExecute {
   min_increase?: string
   max_auction_duration_block?: number
   max_auction_duration_second?: number
+  auction_cancel_fee_rate?: string
 }
 
 interface UpdateCollectionExecute {
   nft_address: string
   support_assets?: AssetInfo[]
   royalties?: Royalty[]
-  auction_cancel_fee_rate?: string
 }
 
 export class NftMarket extends Contract{
-  public init(owner: string, min_increase: string, max_auction_duration_block: number, max_auction_duration_second: number): MsgInstantiateContract {
-    return this.createInstantiateMsg({ owner, min_increase, max_auction_duration_block, max_auction_duration_second });
+  public init(
+    owner: string,
+    min_increase: string,
+    max_auction_duration_block: number,
+    max_auction_duration_second: number,
+    auction_cancel_fee_rate: string,
+  ): MsgInstantiateContract {
+    return this.createInstantiateMsg(
+      { owner, min_increase, max_auction_duration_block, max_auction_duration_second, auction_cancel_fee_rate }
+    );
   }
 
   // Execute Msg
@@ -49,8 +58,8 @@ export class NftMarket extends Contract{
 
   // add collection
   // requirement: msg_sender == owner
-  public addCollection(nft_address: string, support_assets: AssetInfo[], royalties: Royalty[], auction_cancel_fee_rate: string): MsgExecuteContract {
-    const add_collection = { nft_address, support_assets, royalties, auction_cancel_fee_rate }
+  public addCollection(nft_address: string, support_assets: AssetInfo[], royalties: Royalty[]): MsgExecuteContract {
+    const add_collection = { nft_address, support_assets, royalties }
     return this.createExecuteMsg({ add_collection })
   }
 

@@ -19,7 +19,6 @@ export interface CollectionInfo {
   nft_address: string
   support_assets: AssetInfo[]
   royalties: Royalty[]
-  auction_cancel_fee_rate: string
 }
 
 export interface AuctionInfo {
