@@ -17,6 +17,7 @@ interface CollectionInfosQuery {
 }
 
 interface OrdersQuery {
+  seller_address?: string
   start_after?: number
   limit?: number
 }
